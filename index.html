@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Typing Test</title>
+    <link rel="stylesheet" href="./main.css" />
+    <script src="./copy.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Test Your Skillz</h1>
+      <div class="scoreboard">
+        <p>0</p>
+        <p>-</p>
+        <p>0</p>
+      </div>
+      <div>
+        <p class="gameText"></p>
+      </div>
+      <div class="keyboard">
+        <div class="keyboard-row" id="firstRow">
+          <article>`</article>
+          <article>1</article>
+          <article>2</article>
+          <article>3</article>
+          <article>4</article>
+          <article>5</article>
+          <article>6</article>
+          <article>7</article>
+          <article>8</article>
+          <article>9</article>
+          <article>0</article>
+          <article>-</article>
+          <article>+</article>
+        </div>
+        <div class="keyboard-row" id="firstRow">
+          <article>Q</article>
+          <article>W</article>
+          <article>E</article>
+          <article>R</article>
+          <article>T</article>
+          <article>Y</article>
+          <article>U</article>
+          <article>I</article>
+          <article>O</article>
+          <article>P</article>
+          <article>;</article>
+          <article>'</article>
+        </div>
+        <div class="keyboard-row" id="secondRow">
+          <article>A</article>
+          <article>S</article>
+          <article>D</article>
+          <article>F</article>
+          <article>G</article>
+          <article>H</article>
+          <article>J</article>
+          <article>K</article>
+          <article>L</article>
+        </div>
+        <div class="keyboard-row" id="thirdRow">
+          <article>Z</article>
+          <article>X</article>
+          <article>C</article>
+          <article>V</article>
+          <article>B</article>
+          <article>N</article>
+          <article>M</article>
+          <article>,</article>
+          <article>.</article>
+          <article>?</article>
+        </div>
+        <div class="keyboard-row" id="fourth">
+          <article style="min-width: 300px; text-align: center">SPACE</article>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    // Get DOM elements
+    let keyboard = document.querySelectorAll(`article`);
+    let scoreboard = document.querySelector(`.scoreboard`);
+    let correctScore = scoreboard.querySelector(`p`);
+    let incorrectScore = scoreboard.querySelector(`.scoreboard :nth-child(3)`);
+
+    // Load the message
+    let selected = Math.floor(Math.random() * texts.length);
+    let gameText = document.querySelector(`.gameText`);
+    // map over all the text from the game and render it to the page as a <span>
+    let splitText = texts[selected].split("");
+    splitText.map((character) => {
+      let element = document.createElement("span");
+      element.innerText = character;
+      gameText.appendChild(element);
+    });
+
+    // Scoreboard and game state
+    correctAnswers = 0;
+    errors = 0;
+
+    // Keyboard listener
+    function keyboardListener() {
+      document.addEventListener(`keydown`, checkInput);
+
+      // function for keypress
+      function checkInput(e) {
+        keyboard.forEach((key) => {
+          if (
+            key.innerText === e.key.toUpperCase() ||
+            key.innerText === e.code.toUpperCase()
+          ) {
+            highlight(key, checkAnswer(key));
+          }
+        });
+      }
+    }
+
+    // Function for highting
+    async function highlight(key, isCorrect) {
+      if (isCorrect) {
+        key.style.cssText = `background: var(--green); color: white;`;
+      } else {
+        key.style.cssText = `background: var(--red); color: white;`;
+      }
+      await wait(100);
+      key.style.cssText = `background: white; color: var(--black);`;
+    }
+
+    // Function for awarding points
+    function checkAnswer(key) {
+      // split the text object into an array
+      let textArray = texts[selected].toUpperCase().split("");
+      if (
+        key.innerText === textArray[correctAnswers] ||
+        ` ` === textArray[correctAnswers]
+      ) {
+        correctAnswer();
+        return true;
+      } else {
+        wrongAnswer();
+        return false;
+      }
+    }
+
+    // Correct answers
+    function correctAnswer() {
+      correctAnswers++;
+      correctScore.innerText = correctAnswers;
+      gameText.querySelector(
+        `:nth-child(${correctAnswers})`
+      ).style.cssText = `background: var(--green); color: white;`;
+    }
+
+    // Incorrect answers
+    function wrongAnswer() {
+      errors++;
+      incorrectScore.innerText = errors;
+    }
+    // Function for timer
+
+    keyboardListener();
+  </script>
+</html>
